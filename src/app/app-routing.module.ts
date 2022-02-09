@@ -1,10 +1,23 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-const routes: Routes = [];
+import { FullComponent } from './layouts/full/full.component';
 
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }
+export const Approutes: Routes = [
+  {
+    path: '',
+    component: FullComponent,
+    children: [
+      { path: '', redirectTo: '/news', pathMatch: 'full' },
+      {
+        path: 'news',
+        loadChildren: () => import('./news/news.module').then(m => m.NewsModule)
+      }
+    ]
+  },
+  {
+    path: '**',
+    redirectTo: '/news'
+  }
+];
+

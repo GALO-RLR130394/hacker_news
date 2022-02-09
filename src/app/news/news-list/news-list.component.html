@@ -1,0 +1,144 @@
+<div class="card">
+    <div class="card-body">
+        <!-- title -->
+        <h2 class="card-title"><b>Hacker News!</b></h2>
+        <div class="d-flex justify-content-center mb-5 mt-3">
+            <div class="btn-group btn-group-toggle">
+                <label class="btn-primary m-1" ngbButtonLabel>
+                    <input type="checkbox" (click)="getNews()"> All
+                </label>
+                <label class="btn-primary m-1" ngbButtonLabel>
+                    <input type="checkbox" ngbButton (click)="myFaves()"> My faves
+                </label>
+            </div>
+        </div>
+
+        <div class="d-flex mb-3 mt-3">
+            <div class="col-sm-3">
+                <select class="h-100 w-100 form-select-lg mb-3" aria-label="Default select example" (change)="filterQuery($event)" [(value)]="selectedFrame">
+                    <option value="" disabled>Choose a Framework</option>
+                    <option value="angular">
+                        <span>
+                            <i class="fa-address-book fas"></i>
+                            Angular
+                        </span>
+                    </option>
+                    <option value="reactjs" class="mdi mdi-react">
+                        <i class="mdi mdi-react"></i>
+                        React Js
+                    </option>
+                    <option value="vuejs">
+                        <i class="mdi mdi-angular"></i>
+                        Vue Js
+                    </option>
+                </select>
+            </div>
+            <div class="ml-auto">
+                <div class="dl">
+                    <button type="button" class="btn btn-danger btn-circle" placement="left" ngbTooltip="Remove Cache" (click)="removeCache()">
+                        <i class="mdi mdi-delete"></i>
+                    </button>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--ALL-->
+<div class="row justify-content-around" *ngIf="!isFaves">
+    <div class="card d-block col-md-5 col-sm-12 col-xs-12 card-hover" *ngFor='let data of posts;let i = index'>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-10 col-xl-11">
+                    <span class="card-title fs-4" href="">
+                        <i class="mdi mdi-account-circle"></i>
+                        By: {{data.author}}
+                    </span>
+                    <p class="mb-0">
+                        <span class="text-danger">
+                            <i class="mdi mdi-update"></i>
+                            {{data.created_at | date:'dd/MMM/yyyy'}}
+                        </span>
+                    </p>
+                    <p>
+                        <a class="card-title fs-4" [href]="data.story_url" target="_blank">
+                            <i class="mdi mdi-open-in-new"></i>
+                            {{data.story_url}}
+                        </a>
+                    </p>
+                    
+                    {{data.story_title}}
+                </div>
+                <div class="col-md-2 col-xl-1 col-4 mb-3 mb-md-0 d-flex align-posts-center justify-content-start">
+                    <a [ngClass]="{'text-danger': data.fave, 'text-secondary': !data.fave}" class="display-5"  (click)="likePost(i)">
+                        <i class="mdi mdi-heart"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card d-block col-md-5 col-sm-12 col-xs-12 card-hover" *ngIf="posts.length<=0">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12 d-flex justify-content-center">
+                    <h2><b>This page is empty</b></h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--FAVES-->
+<div class="row justify-content-around" *ngIf="isFaves">
+    <div class="card d-block col-md-5 col-sm-12 col-xs-12 card-hover" *ngFor='let data of posts | slice: (page-1) * pageSize : page * pageSize;let i = index'>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-10 col-xl-11">
+                    <span class="card-title fs-4" href="">
+                        <i class="mdi mdi-account-circle"></i>
+                        By: {{data.author}}
+                    </span>
+                    <p class="mb-0">
+                        <span class="text-danger">
+                            <i class="mdi mdi-update"></i>
+                            {{data.created_at | date:'dd/MMM/yyyy'}}
+                        </span>
+                    </p>
+                    <p>
+                        <a class="card-title fs-4" [href]="data.story_url" target="_blank">
+                            <i class="mdi mdi-open-in-new"></i>
+                            {{data.story_url}}
+                        </a>
+                    </p>
+                    
+                    {{data.story_title}}
+                </div>
+                <div class="col-md-2 col-xl-1 col-4 mb-3 mb-md-0 d-flex align-posts-center justify-content-start">
+                    <a [ngClass]="{'text-danger': data.fave, 'text-secondary': !data.fave}" class="display-5"  (click)="likePost(i)">
+                        <i class="mdi mdi-heart"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!---->
+    </div>
+    <div class="card d-block col-md-5 col-sm-12 col-xs-12 card-hover" *ngIf="posts.length<=0">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12 d-flex justify-content-center">
+                    <h2><b>This page is empty</b></h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--PAGINATION-->
+<div class="d-flex align-posts-center justify-content-center mt-5">
+    <ngb-pagination
+        class="d-flex justify-content-center"
+        [(page)]="page"
+        [pageSize]="pageSize"
+        [collectionSize]="collectionSize"
+        [maxSize]="5"
+        (pageChange)="loadPage($event)">
+    </ngb-pagination>
+</div>
